@@ -202,7 +202,7 @@ export class Home extends Component<HomeProps, HomeState> {
           <div className="col-md-10 filter-form">
             <form>
               <div className="row">
-                <div className="col-md-1 filter-icon text-center">
+                <div className="col-md-1 filter-icon">
                  <img class="img-responsive" src="https://www.onerent.co/images/filter-icon.png"/>
                 </div>
                 <div className="col-md-3">
