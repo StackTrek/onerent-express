@@ -15,7 +15,7 @@ export interface HomeState {
   bathRoom?: string[];
   instantViewing?: boolean;
   page?: number;
-  more?: boolean;
+  moreFilter?: number;
   loading?: boolean;
 }
 
@@ -39,14 +39,16 @@ export class Home extends Component<HomeProps, HomeState> {
       bed: this.getParameterByName('bed[]') || [],
       bathRoom: this.getParameterByName('bathRoom[]') || [],
       petsAllowed: this.getParameterByName('petsAllowed[]') || [],
-      instantViewing: !!parseInt(this.getParameterByName('instantViewing')) || false
+      instantViewing: !!parseInt(this.getParameterByName('instantViewing')) || false,
+      moreFilter: parseInt(this.getParameterByName('moreFilter')) || 0
     };
+
   }
 
   getParameterByName(key: string, target?: string) {
     let values = [];
     if(!target){
-      target = location.href;
+      target = decodeURIComponent(location.href);
     }
 
     key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -97,6 +99,76 @@ export class Home extends Component<HomeProps, HomeState> {
   @bind()
   closeInfo() {
     this.setState({ selectedRent: null });
+  }
+
+  componentWillUpdate(props: HomeProps, state: HomeState) {
+    if (this.state != state) {
+      var search = location.search.substring(1);
+      let queryStrings = {};
+      try {
+        queryStrings = search ? this.parseParams(search) : {};
+      } catch (e) {}
+
+      if (state.minRent != this.state.minRent) {
+        delete queryStrings['minRent'];
+        if (state.minRent) {
+          queryStrings['minRent'] = state.minRent;
+        }
+      }
+
+      if (state.maxRent != this.state.maxRent) {
+        delete queryStrings['maxRent'];
+        if (state.maxRent) {
+          queryStrings['maxRent'] = state.maxRent;
+        }
+      }
+
+      if (state.bed != this.state.bed) {
+        queryStrings['bed'] = state.bed;
+      }
+
+      if (state.bathRoom != this.state.bathRoom) {
+        queryStrings['bathRoom'] = state.bathRoom;
+      }
+
+      if (state.petsAllowed != this.state.petsAllowed) {
+        queryStrings['petsAllowed'] = state.petsAllowed;
+      }
+
+      if (state.instantViewing != this.state.instantViewing) {
+        delete queryStrings['instantViewing'];
+        if (state.instantViewing) {
+          queryStrings['instantViewing'] = state.instantViewing ? 1 : 0;
+        }
+      }
+
+      if (state.moreFilter != this.state.moreFilter) {
+        delete queryStrings['moreFilter'];
+        if (state.moreFilter) {
+          queryStrings['moreFilter'] = state.moreFilter;
+        }
+      }
+
+      var newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${$.param(queryStrings)}`;
+      window.history.pushState({ path:newurl }, '', newurl);
+    }
+
+  }
+
+  parseParams(query: string): KeyValuePair<any> {
+    let re = /([^&=]+)=?([^&]*)/g;
+    let decodeRE = /\+/g;  // Regex for replacing addition symbol with a space
+    let decode = function (str) {return decodeURIComponent( str.replace(decodeRE, " ") );};
+    let params = {}, e;
+    while ( e = re.exec(query) ) {
+      var k = decode( e[1] ), v = decode( e[2] );
+      if (k.substring(k.length - 2) === '[]') {
+        k = k.substring(0, k.length - 2);
+        (params[k] || (params[k] = [])).push(v);
+      }
+      else params[k] = v;
+    }
+    return params;
   }
 
   componentDidMount() {
@@ -248,7 +320,7 @@ export class Home extends Component<HomeProps, HomeState> {
   selectPet(val) {
     let petsAllowed = this.state.petsAllowed.concat();
     let index = petsAllowed.indexOf(val);
-    console.log(petsAllowed);
+
     if (index === -1) {
       petsAllowed.push(val);
     } else {
@@ -270,7 +342,8 @@ export class Home extends Component<HomeProps, HomeState> {
         minRent: null,
         maxRent: null,
         page: 1,
-        bathRoom: []
+        bathRoom: [],
+        instantViewing: false
       },
       () => this.getRentals()
     );
@@ -278,7 +351,7 @@ export class Home extends Component<HomeProps, HomeState> {
 
   @bind()
   moreFilter() {
-    this.setState({ more: !this.state.more });
+    this.setState({ moreFilter: this.state.moreFilter ? 0 : 1 });
   }
 
   public render() {
@@ -372,11 +445,11 @@ export class Home extends Component<HomeProps, HomeState> {
                       {showClear ?
                         <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
                         : null}
-                      <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.more ? 'Close' : 'More'}</button>
+                      <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.moreFilter ? 'Close' : 'More'}</button>
                     </div>
                   </div>
                 </div>
-                {this.state.more ?
+                {this.state.moreFilter ?
                   <div className="row">
                     <div className="col-md-offset-1 col-md-3">
                       <div className="form-group">
@@ -420,7 +493,7 @@ export class Home extends Component<HomeProps, HomeState> {
                         <label>Instant Viewing</label><br/>
                         <div className="page-no">
                           <input onClick={e => this.toggleInstantViewing()}
-                                 checked={this.state.instantViewing ? true : false}
+                                 defaultChecked={this.state.instantViewing}
                                  type="checkbox" />
                         </div>
                       </div>
