@@ -42,6 +42,14 @@ header {
   .navbar-nav {
     &.main-nav {
       padding-top: 10px;
+
+      li {
+        a {
+          padding-right: 0;
+          padding-left: 0;
+          margin-right: 15px;
+        }
+      }
     }
 
     &.login-nav {
@@ -152,7 +160,6 @@ header {
     select {
       border: 1px solid #6163D3;
       color: #6163D3;
-      height: 25px;
     }
 
     .back-to-rentals {
@@ -182,6 +189,7 @@ header {
         color: #6163D3;
         border: 1px solid #6163D3;
         background-color: transparent;
+        margin-right: 5px;
       }
     }
 
@@ -190,13 +198,13 @@ header {
       top: 50%;
       transform: translateY(-50%);
       height: 35px;
-      right: 0;
+      right: -40px;
 
       .btn {
         min-height: 35px;
         display: block;
         position: relative;
-        width: 100%;
+        width: 77px;
         height: 35px;
         line-height: 33px;
         padding: 0 12px;
@@ -246,11 +254,10 @@ header {
 }
 
 .results-figure {
-  height: 30px;
-  line-height: 30px;
-  padding: 10px;
+  height: 49px;
+  line-height: 49px;
+  padding: 0 10px;
   background-color: #fff;
-  margin-bottom: 25px;
 
   &.fixed-bottom {
     padding: 0 25px;
@@ -258,7 +265,7 @@ header {
     height: 49px;
     line-height: 49px;
     width: 100%;
-    bottom: -30px;
+    bottom: 0;
     left: 0;
   }
 
@@ -281,6 +288,10 @@ header {
       line-height: 28px;
       border-radius: 50%;
 
+      &:first-child {
+        width: auto;
+      }
+
       &.active {
         border: 1px solid #6163D3;
 
@@ -299,7 +310,7 @@ header {
 
 .results-section {
   background-color: #F0F0F0;
-  padding: 15px 20px;
+  padding: 25px;
 
   .result-item {
     margin-bottom: 20px;
@@ -335,7 +346,11 @@ header {
         }
 
         &.next {
-          right: 0;
+          right: 10px;
+        }
+
+        &.prev {
+          left: 10px;
         }
       }
     }

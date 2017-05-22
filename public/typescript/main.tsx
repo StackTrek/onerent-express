@@ -82,13 +82,13 @@ export class Home extends Component<HomeProps, HomeState> {
           this.markers[rent['id']] = new google.maps.Marker({
             position: JSON.parse(rent['geoLocation']),
             map: this.gMap,
-            icon: '/assets/images/marker-icon.png'
+            icon: '/images/marker-icon.png'
           });
         } else {
           this.markers[rent['id']] = new google.maps.Marker({
             position: JSON.parse(rent['geoLocation']),
             map: this.gMap,
-            icon: '/assets/images/marker-icon.png'
+            icon: '/images/marker-icon.png'
           });
         }
 
@@ -195,15 +195,15 @@ export class Home extends Component<HomeProps, HomeState> {
           </div>
         </div>
         <div className="filter row" >
-          <div className="col-md-1 unpadded back-to-rentals">
+          <div className="col-md-2 unpadded back-to-rentals">
 
-            <h5> <i className="fa fa-2x fa-fw fa-map-pin"></i> <br/>Bay Area</h5>
+            <h5> <img src="https://www.onerent.co/images/active-location-icon.png"/> <br/>BAY AREA</h5>
           </div>
-          <div className="col-md-11 filter-form">
+          <div className="col-md-10 filter-form">
             <form>
               <div className="row">
                 <div className="col-md-1 filter-icon text-center">
-                  <i className="fa fa-5x fa-filter"></i>
+                 <img class="img-responsive" src="https://www.onerent.co/images/filter-icon.png"/>
                 </div>
                 <div className="col-md-3">
                   <div className="form-group">
@@ -241,7 +241,7 @@ export class Home extends Component<HomeProps, HomeState> {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-2 more-items">
+                <div className="col-md-3 more-items">
                   <div className="form-group button-actions">
                     {this.state.beds || this.state.bath || this.state.maxRent || this.state.minRent ?
                     <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
@@ -252,7 +252,7 @@ export class Home extends Component<HomeProps, HomeState> {
               </div>
               {this.state.more ?
               <div className="row">
-                <div className="col-md-offset-1 col-md-2">
+                <div className="col-md-offset-1 col-md-3">
                   <div className="form-group">
                     <label>Baths</label><br/>
                     <div className="page-no">
@@ -269,17 +269,40 @@ export class Home extends Component<HomeProps, HomeState> {
                     </div>
                   </div>
                 </div>
+                <div className="col-md-3">
+                  <div className="form-group">
+                    <label>Pets Allowed</label><br/>
+                    <div className="page-no">
+                      <span><button type="button" className="btn btn-xs">CATS</button></span>
+                      <span><button type="button" className="btn btn-xs">DOGS</button></span>
+
+
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="form-group">
+                    <label>Instant Viewing</label><br/>
+                    <div className="page-no">
+                      <input type="checkbox"/>
+
+
+                    </div>
+                  </div>
+                </div>
               </div>
               : null}
             </form>
           </div>
         </div>
         <div className="results-figure">
-          <div className="col-md-2 results-count">
-            <span>69 Results</span>
-          </div>
-          <div className="results-pag col-md-10 clearfix ">
+
+          <div className="results-pag ">
             <ul>
+            <li>
+                          <span>69 Results</span>
+
+            </li>
              <li className="active">
                <a href="#">1</a>
              </li>
@@ -418,11 +441,13 @@ export class Home extends Component<HomeProps, HomeState> {
 
         </div>
          <div className="results-figure fixed-bottom" >
-          <div className="col-md-2 results-count">
-            <span>69 Results</span>
-          </div>
-          <div className="results-pag col-md-10 clearfix ">
+
+          <div className="results-pag">
             <ul>
+              <li>
+                   <span>69 Results</span>
+
+             </li>
              <li className="active">
                <a href="#">1</a>
              </li>
