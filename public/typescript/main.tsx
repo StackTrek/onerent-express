@@ -422,7 +422,7 @@ export class Home extends Component<HomeProps, HomeState> {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label>Beds</label><br/>
                       <div className="page-no" >
@@ -445,7 +445,7 @@ export class Home extends Component<HomeProps, HomeState> {
                       {showClear ?
                         <button type="button" onClick={this.clearFilter} className="btn btn-warning clear">Clear</button>
                         : null}
-                      <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.moreFilter ? 'Close' : 'More'}</button>
+                      <button type="button" onClick={this.moreFilter} className="btn"> {this.state.moreFilter ? 'Close' : 'More'}</button>
                     </div>
                   </div>
                 </div>
@@ -470,7 +470,7 @@ export class Home extends Component<HomeProps, HomeState> {
                     <div className="col-md-3">
                       <div className="form-group">
                         <label>Pets Allowed</label><br/>
-                        <div className="page-no">
+                        <div className="pets-allowed">
                           <span>
                             <button type="button"
                                     onClick={e => this.selectPet('Cat')}
@@ -488,7 +488,7 @@ export class Home extends Component<HomeProps, HomeState> {
                         </div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                       <div className="form-group">
                         <label>Instant Viewing</label><br/>
                         <div className="page-no">

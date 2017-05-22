@@ -204,7 +204,22 @@ header {
         color: #6163D3;
         border: 1px solid #6163D3;
         background-color: transparent;
-        margin-right: 3px;
+        margin-right: 0px;
+        min-width: 24px;
+
+        &.active {
+          color: #FFF;
+          background-color: #00A8A0;
+        }
+      }
+    }
+
+    .pets-allowed {
+      button {
+        color: #6163D3;
+        border: 1px solid #6163D3;
+        background-color: transparent;
+        margin-right: 1px;
         min-width: 24px;
 
         &.active {
@@ -215,11 +230,8 @@ header {
     }
 
     .more-items {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 35px;
-      right: -40px;
+
+      padding-top: 15px;
 
       .btn {
         min-height: 35px;
