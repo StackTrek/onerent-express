@@ -10,8 +10,10 @@ export interface HomeState {
   pageCount?: number;
   minRent?: number;
   maxRent?: number;
-  beds?: string;
-  bath?: string;
+  bed?: string[];
+  petsAllowed?: string[];
+  bathRoom?: string[];
+  instantViewing?: boolean;
   page?: number;
   more?: boolean;
   loading?: boolean;
@@ -28,7 +30,41 @@ export class Home extends Component<HomeProps, HomeState> {
   constructor(props: HomeProps, context) {
     super(props, context);
 
-    this.state = { loading: true, rentals: [] };
+    this.state = {
+      loading: true,
+      rentals: [],
+      minRent: parseInt(this.getParameterByName('minRent')) || null,
+      maxRent: parseInt(this.getParameterByName('maxRent')) || null,
+      page: parseInt(this.getParameterByName('page')) || 1,
+      bed: this.getParameterByName('bed[]') || [],
+      bathRoom: this.getParameterByName('bathRoom[]') || [],
+      petsAllowed: this.getParameterByName('petsAllowed[]') || [],
+      instantViewing: !!parseInt(this.getParameterByName('instantViewing')) || false
+    };
+  }
+
+  getParameterByName(key: string, target?: string) {
+    let values = [];
+    if(!target){
+      target = location.href;
+    }
+
+    key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    let pattern = key + '=([^&#]+)';
+    let o_reg = new RegExp(pattern,'ig');
+    while (true){
+      let matches = o_reg.exec(target);
+      if (matches && matches[1]){
+        values.push(matches[1]);
+      } else {
+        break;
+      }
+    }
+    if (!values.length){
+      return null;
+    }
+
+    return values.length == 1 && key.indexOf('[]') !== -1 ? values[0] : values;
   }
 
   getRentals() {
@@ -41,10 +77,12 @@ export class Home extends Component<HomeProps, HomeState> {
         'Accept': 'application/json'
       },
       data: {
-        max_rent: this.state.maxRent,
-        min_rent: this.state.minRent,
-        beds: this.state.beds,
-        bath: this.state.bath,
+        maxRent: this.state.maxRent,
+        minRent: this.state.minRent,
+        bed: this.state.bed,
+        bathRoom: this.state.bathRoom,
+        petsAllowed: this.state.petsAllowed,
+        instantViewing: this.state.instantViewing ? 1 : 0,
         page: this.state.page
       }
     }).done((res) => {
@@ -154,10 +192,11 @@ export class Home extends Component<HomeProps, HomeState> {
 
   getPagination() {
     let buttons = [];
-    for (let x = 0; x < this.state.pageCount; x++) {
-      buttons.push(<li key={x}>
-        <a href="javascript:void(0)" onClick={e => this.setState({ page: x + 1 }, () => this.getRentals())}>{x + 1}</a>
-      </li>);
+    for (let x = 1; x <= this.state.pageCount; x++) {
+      buttons.push(
+        <li key={x} className={this.state.page == (x) ? 'active' : ''}>
+          <a href="javascript:void(0)" onClick={e => this.setState({ page: x }, () => this.getRentals())}>{x}</a>
+        </li>);
     }
 
     return (
@@ -165,23 +204,8 @@ export class Home extends Component<HomeProps, HomeState> {
         <ul>
           <li>
             <span>{this.state.count} Results</span>
-
           </li>
-          <li className="active">
-            <a href="#">1</a>
-          </li>
-          <li>
-            <a href="#">2</a>
-          </li>
-          <li>
-            <a href="#">3</a>
-          </li>
-          <li>
-            <a href="#">4</a>
-          </li>
-          <li>
-            <a href="#">5</a>
-          </li>
+          {buttons}
         </ul>
       </div>
     );
@@ -198,16 +222,58 @@ export class Home extends Component<HomeProps, HomeState> {
   }
 
   selectBed(val) {
-    this.setState({ beds: val }, () => this.getRentals());
+    let bed = this.state.bed.concat();
+    let index = bed.indexOf(val);
+    if (index === -1) {
+      bed.push(val);
+    } else {
+      bed.splice(index, 1);
+    }
+
+    this.setState({ bed }, () => this.getRentals());
   }
 
   selectBath(val) {
-    this.setState({ bath: val }, () => this.getRentals());
+    let bathRoom = this.state.bathRoom.concat();
+    let index = bathRoom.indexOf(val);
+    if (index === -1) {
+      bathRoom.push(val);
+    } else {
+      bathRoom.splice(index, 1);
+    }
+
+    this.setState({ bathRoom }, () => this.getRentals());
+  }
+
+  selectPet(val) {
+    let petsAllowed = this.state.petsAllowed.concat();
+    let index = petsAllowed.indexOf(val);
+    console.log(petsAllowed);
+    if (index === -1) {
+      petsAllowed.push(val);
+    } else {
+      petsAllowed.splice(index, 1);
+    }
+
+    this.setState({ petsAllowed }, () => this.getRentals());
+  }
+
+  toggleInstantViewing() {
+    this.setState({ instantViewing: !this.state.instantViewing }, () => this.getRentals())
   }
 
   @bind()
   clearFilter() {
-    this.setState({ beds: null, minRent: null, maxRent: null, page: null, bath: null }, () => this.getRentals());
+    this.setState({
+        bed: [],
+        petsAllowed: [],
+        minRent: null,
+        maxRent: null,
+        page: 1,
+        bathRoom: []
+      },
+      () => this.getRentals()
+    );
   }
 
   @bind()
@@ -218,26 +284,18 @@ export class Home extends Component<HomeProps, HomeState> {
   public render() {
 
     let maxOptions = [], minOptions = [];
-    for (let x = 0; x < 10; x++) {
-      let val = (x+1) * 1000;
-
-      if (!this.state.minRent || this.state.minRent < val) {
-        maxOptions.push(<option key={val} value={`${val}`}>${val}</option>);
-      }
-      if (!this.state.minRent || this.state.minRent < (val + 500)) {
-        maxOptions.push(<option key={val + 500} value={`${val + 500}`}>${val + 500}</option>);
+    for(let x = 1000; x <= 10000; x+=500) {
+      if (!this.state.minRent || this.state.minRent <= x) {
+        maxOptions.push(<option key={x} value={`${x}`}>${x}</option>);
       }
 
-      if (!this.state.maxRent || this.state.maxRent > val) {
-        minOptions.push(<option key={val} value={`${val}`}>${val}</option>);
-      }
-      if (!this.state.maxRent || this.state.maxRent > val + 500) {
-        minOptions.push(<option key={val + 500} value={`${val + 500}`}>${val + 500}</option>);
+      if (!this.state.maxRent || this.state.maxRent >= x) {
+        minOptions.push(<option key={x} value={`${x}`}>${x}</option>);
       }
     }
 
     let beds = ['1', '2', '3', '4', '5+'];
-
+    let bathRooms = ['1', '2', '3', '4+'];
 
     let rentLoc;
     if (this.state.selectedRent) {
@@ -246,6 +304,9 @@ export class Home extends Component<HomeProps, HomeState> {
         lng: this.state.selectedRent['location']['long']
       };
     }
+
+    let showClear = this.state.bed.length || this.state.bathRoom.length || this.state.maxRent
+      || this.state.minRent || this.state.petsAllowed.length || this.state.instantViewing ? true : false;
 
     return (
       <div className="body">
@@ -274,7 +335,7 @@ export class Home extends Component<HomeProps, HomeState> {
                     <div className="form-group">
                       <label htmlFor="max-rent">Min Rent</label>
                       <select id="max-rent" className="form-control" value={`${this.state.minRent}`} onChange={this.selectMin}>
-                        <option value={null}>Choose ...</option>
+                        <option value={''}>Choose ...</option>
                         {minOptions}
                       </select>
                     </div>
@@ -283,7 +344,7 @@ export class Home extends Component<HomeProps, HomeState> {
                     <div className="form-group">
                       <label htmlFor="min-rent">Max Rent</label>
                       <select id="min-rent" className="form-control" value={`${this.state.maxRent}`} onChange={this.selectMax}>
-                        <option value={null}>Choose ...</option>
+                        <option value={''}>Choose ...</option>
                         {maxOptions}
                       </select>
                     </div>
@@ -294,8 +355,8 @@ export class Home extends Component<HomeProps, HomeState> {
                       <div className="page-no" >
                         {beds.map(val => {
                           let cls = 'btn btn-xs';
-                          if (this.state.beds == val) {
-                            cls = 'btn btn-xs btn-danger';
+                          if (this.state.bed.indexOf(val) !== -1) {
+                            cls = 'btn btn-xs active';
                           }
                           return (
                             <span key={val}>
@@ -308,7 +369,7 @@ export class Home extends Component<HomeProps, HomeState> {
                   </div>
                   <div className="col-md-3 more-items">
                     <div className="form-group button-actions">
-                      {this.state.beds || this.state.bath || this.state.maxRent || this.state.minRent ?
+                      {showClear ?
                         <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
                         : null}
                       <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.more ? 'Close' : 'More'}</button>
@@ -321,12 +382,11 @@ export class Home extends Component<HomeProps, HomeState> {
                       <div className="form-group">
                         <label>Baths</label><br/>
                         <div className="page-no">
-                          {beds.map(val => {
+                          {bathRooms.map(val => {
                             let cls = 'btn btn-xs';
-                            if (this.state.bath == val) {
-                              cls = 'btn btn-xs btn-danger';
+                            if (this.state.bathRoom.indexOf(val) !== -1) {
+                              cls = 'btn btn-xs active';
                             }
-
                             return <span key={val}>
                           <button type="button" onClick={e => this.selectBath(val)} className={cls}>{val}</button>&nbsp;
                         </span>
@@ -338,10 +398,20 @@ export class Home extends Component<HomeProps, HomeState> {
                       <div className="form-group">
                         <label>Pets Allowed</label><br/>
                         <div className="page-no">
-                          <span><button type="button" className="btn btn-xs">CATS</button></span>
-                          <span><button type="button" className="btn btn-xs">DOGS</button></span>
-
-
+                          <span>
+                            <button type="button"
+                                    onClick={e => this.selectPet('Cat')}
+                                    className={`btn btn-xs ${this.state.petsAllowed.indexOf('Cat') !== -1 ? 'active' : ''}`}>
+                              CATS
+                            </button>
+                          </span>
+                          <span>
+                            <button type="button"
+                                    onClick={e => this.selectPet('Dog')}
+                                    className={`btn btn-xs ${this.state.petsAllowed.indexOf('Dog') !== -1 ? 'active' : ''}`}>
+                              DOGS
+                            </button>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -349,9 +419,9 @@ export class Home extends Component<HomeProps, HomeState> {
                       <div className="form-group">
                         <label>Instant Viewing</label><br/>
                         <div className="page-no">
-                          <input type="checkbox"/>
-
-
+                          <input onClick={e => this.toggleInstantViewing()}
+                                 checked={this.state.instantViewing ? true : false}
+                                 type="checkbox" />
                         </div>
                       </div>
                     </div>

@@ -205,6 +205,11 @@ header {
         background-color: transparent;
         margin-right: 3px;
         min-width: 24px;
+
+        &.active {
+          color: #FFF;
+          background-color: #00A8A0;
+        }
       }
     }
 

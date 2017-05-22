@@ -18,12 +18,12 @@ router.get('/api/properties', wrap(function* (req, res, next) {
   let query = Property.find({});
 
   // filter by rent amount
-  if (filters['min_rent']) {
-    query.where('rent').gte(filters['min_rent']);
+  if (filters['minRent']) {
+    query.where('rent').gte(filters['minRent']);
   }
 
-  if (filters['max_rent']) {
-    query.where('rent').lte(filters['max_rent']);
+  if (filters['maxRent']) {
+    query.where('rent').lte(filters['maxRent']);
   }
 
   // filter by bed count
