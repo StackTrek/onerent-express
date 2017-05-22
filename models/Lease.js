@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const LeaseSchema = mongoose.Schema({
-	id: mongoose.Schema.Types.ObjectId,
-    propertyId: mongoose.Schema.Types.ObjectId,
+	id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  propertyId: { type: mongoose.Schema.Types.ObjectId, required: true },
 });
 
 mongoose.model('Lease', LeaseSchema);
