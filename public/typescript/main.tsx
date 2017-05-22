@@ -27,15 +27,14 @@ export class Home extends Component<HomeProps, HomeState> {
   constructor(props: HomeProps, context) {
     super(props, context);
 
-    this.state = { loading: true };
+    this.state = { loading: true, rentals: [] };
   }
 
   getRentals() {
-
     this.setState({ loading: true });
 
     $.ajax({
-      url: '/rentals',
+      url: '/api/properties',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Accept': 'application/json'
@@ -80,13 +79,19 @@ export class Home extends Component<HomeProps, HomeState> {
         if (this.markers[rent['id']]) {
           this.markers[rent['id']].setMap(null);
           this.markers[rent['id']] = new google.maps.Marker({
-            position: JSON.parse(rent['geoLocation']),
+            position: {
+              lat: rent['location']['lat'],
+              lng: rent['location']['long']
+            },
             map: this.gMap,
             icon: '/images/marker-icon.png'
           });
         } else {
           this.markers[rent['id']] = new google.maps.Marker({
-            position: JSON.parse(rent['geoLocation']),
+            position: {
+              lat: rent['location']['lat'],
+              lng: rent['location']['long']
+            },
             map: this.gMap,
             icon: '/images/marker-icon.png'
           });
@@ -116,11 +121,28 @@ export class Home extends Component<HomeProps, HomeState> {
     }
 
     return (
-      <div className="row">
-        <div className="pages">
-          <h5>{this.state.count} results</h5>
-          <ul className="pagination">{buttons}</ul>
-        </div>
+      <div className="results-pag ">
+        <ul>
+          <li>
+            <span>{this.state.count} Results</span>
+
+          </li>
+          <li className="active">
+            <a href="#">1</a>
+          </li>
+          <li>
+            <a href="#">2</a>
+          </li>
+          <li>
+            <a href="#">3</a>
+          </li>
+          <li>
+            <a href="#">4</a>
+          </li>
+          <li>
+            <a href="#">5</a>
+          </li>
+        </ul>
       </div>
     );
   }
@@ -179,340 +201,183 @@ export class Home extends Component<HomeProps, HomeState> {
 
     let rentLoc;
     if (this.state.selectedRent) {
-      rentLoc = JSON.parse(this.state.selectedRent['geoLocation']);
+      rentLoc = {
+        lat: this.state.selectedRent['location']['lat'],
+        lng: this.state.selectedRent['location']['long']
+      };
     }
 
-    return <div className="body">
-      <div className="main-content">
-        <div className="heading">
-          <div className="col-md-12">
-            <ol className="breadcrumb">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Rentals</a></li>
-              <li className="active"><a href="#">San Francisco</a></li>
-            </ol>
-            <h1>San Francisco Bay Area Rental Property Listings</h1>
+    return (
+      <div className="body">
+        <div className="main-content">
+          <div className="heading">
+            <div className="col-md-12">
+              <ol className="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Rentals</a></li>
+                <li className="active"><a href="#">San Francisco</a></li>
+              </ol>
+              <h1>San Francisco Bay Area Rental Property Listings</h1>
+            </div>
           </div>
-        </div>
-        <div className="filter row" >
-          <div className="col-md-2 unpadded back-to-rentals">
-
-            <h5> <img src="https://www.onerent.co/images/active-location-icon.png"/> <br/>BAY AREA</h5>
-          </div>
-          <div className="col-md-10 filter-form">
-            <form>
-              <div className="row">
-                <div className="col-md-1 filter-icon">
-                 <img class="img-responsive" src="https://www.onerent.co/images/filter-icon.png"/>
-                </div>
-                <div className="col-md-3">
-                  <div className="form-group">
-                    <label htmlFor="max-rent">Min Rent</label>
-                    <select id="max-rent" className="form-control" value={`${this.state.minRent}`} onChange={this.selectMin}>
-                      <option value={null}>Choose ...</option>
-                      {minOptions}
-                    </select>
+          <div className="filter row" >
+            <div className="col-md-2 unpadded back-to-rentals">
+              <h5> <img src="https://www.onerent.co/images/active-location-icon.png"/> <br/>BAY AREA</h5>
+            </div>
+            <div className="col-md-10 filter-form">
+              <form>
+                <div className="row">
+                  <div className="col-md-1 filter-icon">
+                    <img className="img-responsive" src="https://www.onerent.co/images/filter-icon.png"/>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="form-group">
-                    <label htmlFor="min-rent">Max Rent</label>
-                    <select id="min-rent" className="form-control" value={`${this.state.maxRent}`} onChange={this.selectMax}>
-                      <option value={null}>Choose ...</option>
-                      {maxOptions}
-                    </select>
+                  <div className="col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="max-rent">Min Rent</label>
+                      <select id="max-rent" className="form-control" value={`${this.state.minRent}`} onChange={this.selectMin}>
+                        <option value={null}>Choose ...</option>
+                        {minOptions}
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="form-group">
-                    <label>Beds</label><br/>
-                    <div className="page-no" >
-                      {beds.map(val => {
-                        let cls = 'btn btn-xs';
-                        if (this.state.beds == val) {
-                          cls = 'btn btn-xs btn-danger';
-                        }
-                        return (
-                          <span key={val}>
+                  <div className="col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="min-rent">Max Rent</label>
+                      <select id="min-rent" className="form-control" value={`${this.state.maxRent}`} onChange={this.selectMax}>
+                        <option value={null}>Choose ...</option>
+                        {maxOptions}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="form-group">
+                      <label>Beds</label><br/>
+                      <div className="page-no" >
+                        {beds.map(val => {
+                          let cls = 'btn btn-xs';
+                          if (this.state.beds == val) {
+                            cls = 'btn btn-xs btn-danger';
+                          }
+                          return (
+                            <span key={val}>
                             <button type="button" onClick={e => this.selectBed(val)} className={cls}>{val}</button>&nbsp;
                           </span>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3 more-items">
+                    <div className="form-group button-actions">
+                      {this.state.beds || this.state.bath || this.state.maxRent || this.state.minRent ?
+                        <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
+                        : null}
+                      <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.more ? 'Close' : 'More'}</button>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-3 more-items">
-                  <div className="form-group button-actions">
-                    {this.state.beds || this.state.bath || this.state.maxRent || this.state.minRent ?
-                    <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
-                    : null}
-                    <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.more ? 'Close' : 'More'}</button>
-                  </div>
-                </div>
-              </div>
-              {this.state.more ?
-              <div className="row">
-                <div className="col-md-offset-1 col-md-3">
-                  <div className="form-group">
-                    <label>Baths</label><br/>
-                    <div className="page-no">
-                      {beds.map(val => {
-                        let cls = 'btn btn-xs';
-                        if (this.state.bath == val) {
-                          cls = 'btn btn-xs btn-danger';
-                        }
+                {this.state.more ?
+                  <div className="row">
+                    <div className="col-md-offset-1 col-md-3">
+                      <div className="form-group">
+                        <label>Baths</label><br/>
+                        <div className="page-no">
+                          {beds.map(val => {
+                            let cls = 'btn btn-xs';
+                            if (this.state.bath == val) {
+                              cls = 'btn btn-xs btn-danger';
+                            }
 
-                        return <span key={val}>
+                            return <span key={val}>
                           <button type="button" onClick={e => this.selectBath(val)} className={cls}>{val}</button>&nbsp;
                         </span>
-                      })}
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="form-group">
+                        <label>Pets Allowed</label><br/>
+                        <div className="page-no">
+                          <span><button type="button" className="btn btn-xs">CATS</button></span>
+                          <span><button type="button" className="btn btn-xs">DOGS</button></span>
+
+
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="form-group">
+                        <label>Instant Viewing</label><br/>
+                        <div className="page-no">
+                          <input type="checkbox"/>
+
+
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="form-group">
-                    <label>Pets Allowed</label><br/>
-                    <div className="page-no">
-                      <span><button type="button" className="btn btn-xs">CATS</button></span>
-                      <span><button type="button" className="btn btn-xs">DOGS</button></span>
-
-
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="form-group">
-                    <label>Instant Viewing</label><br/>
-                    <div className="page-no">
-                      <input type="checkbox"/>
-
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-              : null}
-            </form>
+                  : null}
+              </form>
+            </div>
           </div>
-        </div>
-        <div className="results-figure">
-
-          <div className="results-pag ">
-            <ul>
-            <li>
-                          <span>69 Results</span>
-
-            </li>
-             <li className="active">
-               <a href="#">1</a>
-             </li>
-             <li>
-               <a href="#">2</a>
-             </li>
-             <li>
-               <a href="#">3</a>
-             </li>
-             <li>
-               <a href="#">4</a>
-             </li>
-             <li>
-               <a href="#">5</a>
-             </li>
-          </ul>
+          <div className="results-figure">
+            {this.getPagination()}
           </div>
-        </div>
-        <div className="row clearfix results-section">
-            <div className="result-item col-md-6">
-
-                <div className="image-carousel">
-                  <div className="like-button"></div>
-                   <div className="slide-pag">
-                      <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-                      <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
-
-                    </div>
-                  <div className="owl-carousel owl-theme">
+          <div className="row clearfix results-section">
+            {this.state.rentals.map(property => {
+              return (
+                <div key={property['_id']} className="result-item col-md-6">
+                  {property['images'] && property['images'].length ?
+                    <div className="image-carousel">
+                      <div className="like-button"></div>
+                      <div className="slide-pag">
+                        <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
+                        <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
+                      </div>
+                      <div className="owl-carousel owl-theme">
                         <div className="item">
                           <img className="img-responsive" src="http://placehold.it/400x250"/>
                         </div>
-                  </div>
-
-                </div>
-                <div className="item-description">
-                  <div className="soon pull-right">
-                    Coming Soon
-                  </div>
-                  <h5>
-                    266 Ney St · San Francisco
-                  </h5>
-                  <h6>
-                    2 bed, 1 bath · 1100 sqft · 650 credit
-
-                  </h6>
-                </div>
-            </div>
-             <div className="result-item col-md-6">
-
-                <div className="image-carousel">
-                  <div className="like-button"></div>
-                   <div className="slide-pag">
-                      <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-                      <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
-
+                      </div>
+                    </div> :
+                    <div className="place-img"
+                         style={{backgroundImage: `url(https://maps.googleapis.com/maps/api/streetview?location=${property['location']['lat']},${property['location']['long']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E)`}}></div>
+                  }
+                  <div className="item-description">
+                    <div className="soon pull-right">
+                      Coming Soon
                     </div>
-                  <div className="owl-carousel owl-theme">
-                        <div className="item">
-                          <img className="img-responsive" src="http://placehold.it/400x250"/>
-                        </div>
+                    <h5>
+                      {property['street']} · {property['state']}
+                    </h5>
+                    <h6>
+                      {property['bed']} bed, {property['bathRoom']} bath · {property['totalArea']} sqft · {property['credit']} credit
+                    </h6>
                   </div>
-
                 </div>
-                <div className="item-description">
-                  <div className="soon pull-right">
-                    Coming Soon
-                  </div>
-                  <h5>
-                    266 Ney St · San Francisco
-                  </h5>
-                  <h6>
-                    2 bed, 1 bath · 1100 sqft · 650 credit
-
-                  </h6>
-                </div>
-            </div>
-             <div className="result-item col-md-6">
-
-                <div className="image-carousel">
-                  <div className="like-button"></div>
-                   <div className="slide-pag">
-                      <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-                      <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
-
-                    </div>
-                  <div className="owl-carousel owl-theme">
-                        <div className="item">
-                          <img className="img-responsive" src="http://placehold.it/400x250"/>
-                        </div>
-                  </div>
-
-                </div>
-                <div className="item-description">
-                  <div className="soon pull-right">
-                    Coming Soon
-                  </div>
-                  <h5>
-                    266 Ney St · San Francisco
-                  </h5>
-                  <h6>
-                    2 bed, 1 bath · 1100 sqft · 650 credit
-
-                  </h6>
-                </div>
-            </div>
-             <div className="result-item col-md-6">
-
-                <div className="image-carousel">
-                  <div className="like-button"></div>
-                   <div className="slide-pag">
-                      <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-                      <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
-
-                    </div>
-                  <div className="owl-carousel owl-theme">
-                        <div className="item">
-                          <img className="img-responsive" src="http://placehold.it/400x250"/>
-                        </div>
-                  </div>
-
-                </div>
-                <div className="item-description">
-                  <div className="soon pull-right">
-                    Coming Soon
-                  </div>
-                  <h5>
-                    266 Ney St · San Francisco
-                  </h5>
-                  <h6>
-                    2 bed, 1 bath · 1100 sqft · 650 credit
-
-                  </h6>
-                </div>
-            </div>
-
-        </div>
-         <div className="results-figure fixed-bottom" >
-
-          <div className="results-pag">
-            <ul>
-              <li>
-                   <span>69 Results</span>
-
-             </li>
-             <li className="active">
-               <a href="#">1</a>
-             </li>
-             <li>
-               <a href="#">2</a>
-             </li>
-             <li>
-               <a href="#">3</a>
-             </li>
-             <li>
-               <a href="#">4</a>
-             </li>
-             <li>
-               <a href="#">5</a>
-             </li>
-          </ul>
-          </div>
-        </div>
-        {/*{this.state.loading ?
-        <div className="loading"><i className="fa fa-spin fa-spinner"></i> Loading ...</div>
-        : null}
-
-        {this.state.rentals && this.state.rentals.length ?
-        <div className="rentals">
-          {this.getPagination()}
-          <div className="rental-list">
-            {this.state.rentals.map(rental => {
-              let loc = JSON.parse(rental['geoLocation']);
-              return <div className="rental-item" key={rental['id']}>
-                <div className="place-img" style={{ backgroundImage: `url(https://maps.googleapis.com/maps/api/streetview?location=${loc['lat']},${loc['lng']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E)` }}></div>
-                <strong>{rental['address']} {rental['city']}</strong>
-                <span className="pull-right">
-                  {rental['targetRent'] ?
-                    <span color="green">${rental['targetRent']}</span> :
-                    <i color="blue">Coming Soon!</i>}
-                </span><br/>
-                <small className="muted">
-                  {rental['bedCount']} bed{rental['bedCount'] > 1 ? 's' : ''}, &nbsp;
-                  {rental['bathroomCount']} bath{rental['bathroomCount'] > 1 ? 's' : ''},  &nbsp;
-                  {rental['totalArea']} sqft,  &nbsp;
-                  {rental['minimumCreditStore']} credit
-                </small>
-              </div>
+              );
             })}
           </div>
-          {this.getPagination()}
+          <div className="results-figure fixed-bottom" >
+            {this.getPagination()}
+          </div>
         </div>
-        : null}*/}
-
-      </div>
-      <div className="map" data-spy="affix" data-offset-top="0">
-        <div style={{ height: 'calc(100vh - 60px)' }} ref={e => this.mapDiv = e}></div>
-        {this.state.selectedRent ?
-        <div style={{ position: 'absolute', top: '10px', right: '10px', width: '95%' }}>
-          <span className="pull-right" style={{ top: '25px', position: 'relative', right: '10px', color: '#fff' }} onClick={this.closeInfo}><i className="fa fa-times"></i></span>
-          <img height="250px" src={`https://maps.googleapis.com/maps/api/streetview?location=${rentLoc['lat']},${rentLoc['lng']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E`} width="100%" />
-          <span style={{ top:'-41px',left: '10px',position: 'relative',color: '#fff'}}>
+        <div className="map" data-spy="affix" data-offset-top="0">
+          <div style={{ height: 'calc(100vh - 60px)' }} ref={e => this.mapDiv = e}></div>
+          {this.state.selectedRent ?
+            <div style={{ position: 'absolute', top: '10px', right: '10px', width: '95%' }}>
+              <span className="pull-right" style={{ top: '25px', position: 'relative', right: '10px', color: '#fff' }} onClick={this.closeInfo}><i className="fa fa-times"></i></span>
+              <img height="250px" src={`https://maps.googleapis.com/maps/api/streetview?location=${rentLoc['lat']},${rentLoc['lng']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E`} width="100%" />
+              <span style={{ top:'-41px',left: '10px',position: 'relative',color: '#fff'}}>
             {this.state.selectedRent['address']} {this.state.selectedRent['city']}<br/>
-            {this.state.selectedRent['bedCount']} bed{this.state.selectedRent['bedCount'] > 1 ? 's' : ''}, &nbsp;
-            {this.state.selectedRent['bathroomCount']} bath{this.state.selectedRent['bathroomCount'] > 1 ? 's' : ''},  &nbsp;
+                {this.state.selectedRent['bedCount']} bed{this.state.selectedRent['bedCount'] > 1 ? 's' : ''}, &nbsp;
+                {this.state.selectedRent['bathroomCount']} bath{this.state.selectedRent['bathroomCount'] > 1 ? 's' : ''},  &nbsp;
           </span>
+            </div>
+            : null}
         </div>
-        : null}
       </div>
-    </div>
+    )
   }
 }
 

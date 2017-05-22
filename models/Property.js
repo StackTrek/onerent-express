@@ -10,6 +10,8 @@ const PropertySchema = mongoose.Schema({
   bathRoom: Number,
   instantViewing: Boolean,
   allowedPets: Array,
+  totalArea: Number,
+  credit: Number,
   location: {
 	  long: {
 	    type: Number, required: true
