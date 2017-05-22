@@ -1,17 +1,120 @@
 var express = require('express');
 const mongoose = require('mongoose');
 const wrap = require('co-express');
+const http = require('http');
+const countries = require('country-data').countries;
+const currencies = require('country-data').currencies;
 
 var router = express.Router();
 
+function getIpDetails(ip, cb) {
+  http.get('http://ipinfo.io/' + ip, (res) => {
+    let { statusCode } = res;
+
+    let error;
+    if (statusCode !== 200) {
+      error = new Error(`Request Failed.\n` +
+        `Status Code: ${statusCode}`);
+    }
+
+    if (error) {
+      return cb(null, error);
+    }
+
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      try {
+        return cb(JSON.parse(rawData));
+      } catch (e) {
+        return cb(null, e);
+      }
+    });
+  }).on('error', (e) => {
+    cb(null, e);
+  });
+}
+
+function convertCurrency(from, to, value, cb) {
+  value = value || 1;
+  http.get('http://api.fixer.io/latest?base=' + from, (res) => {
+    let { statusCode } = res;
+
+    let error;
+    if (statusCode !== 200) {
+      error = new Error(`Request Failed.\n` +
+        `Status Code: ${statusCode}`);
+    }
+
+    if (error) {
+      return cb(null, error);
+    }
+
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      try {
+        let parseData = JSON.parse(rawData);
+        return cb(parseData['rates'][to] * value);
+      } catch (e) {
+        return cb(null, e);
+      }
+    });
+  }).on('error', (e) => {
+    cb(null, e);
+  });
+}
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  getIpDetails(ip, (data, err) => {
+    if (err) {
+      return console.log(err.message);
+    }
+
+    if (!data['country']) {
+      return res.render('index', {
+        title: 'Express',
+        currency: {
+          symbol: '$',
+          rate: 1,
+        },
+      });
+    }
+
+    data['currencies'] = countries[data['country']]['currencies'];
+    convertCurrency('USD', data['currencies'][0], 1, (rate, err) => {
+      if (err) {
+        return console.log(err);
+      }
+
+      if (!data['currencies'][0]) {
+        return res.render('index', {
+          title: 'Express',
+          currency: {
+            symbol: '$',
+            rate: 1,
+          },
+        });
+      }
+
+      return res.render('index', {
+        title: 'Express',
+        currency: {
+          symbol: currencies[data['currencies'][0]]['symbol'],
+          rate: rate,
+        },
+      });
+    });
+  });
 });
 
 router.get('/api/properties', wrap(function* (req, res, next) {
   let filters = req.query;
-  let limit = parseInt(filters['limit']) || 20;
+  let limit = parseInt(filters['limit']) || 10;
   let page = parseInt(filters['page']) || 1;
   const Property = mongoose.model('Property');
 

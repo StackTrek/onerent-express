@@ -12,6 +12,7 @@ const PropertySchema = mongoose.Schema({
   allowedPets: Array,
   totalArea: Number,
   credit: Number,
+  ready: { type: Boolean, default: true },
   location: {
 	  long: {
 	    type: Number, required: true
