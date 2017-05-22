@@ -48,8 +48,12 @@ export class Property extends Component<PropertyProps, PropertyState> {
               )}
             </div>
           </div> :
-          <div className="place-img"
-               style={{backgroundImage: `url(https://maps.googleapis.com/maps/api/streetview?location=${this.props.details['location']['lat']},${this.props.details['location']['long']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E)`}}></div>
+          <div className="image-carousel">
+            <div className="like-button"></div>
+            <div className="place-img"
+                 style={{backgroundImage: `url(https://maps.googleapis.com/maps/api/streetview?location=${this.props.details['location']['lat']},${this.props.details['location']['long']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E)`}}>
+            </div>
+          </div>
         }
         <div className="item-description">
           <div className="soon pull-right">
@@ -59,7 +63,7 @@ export class Property extends Component<PropertyProps, PropertyState> {
             {this.props.details['street']} · {this.props.details['state']}
           </h5>
           <h6>
-            {this.props.details['bed']} bed, {this.props.details['bathRoom']} bath · {this.props.details['totalArea']} sqft · {this.props.details['credit']} credit
+            {this.props.details['bed'] || '0'} bed, {this.props.details['bathRoom'] || '0'} bath · {this.props.details['totalArea'] || '0'} sqft · {this.props.details['credit'] || '0'} credit
           </h6>
         </div>
       </div>
