@@ -14,7 +14,7 @@ export class Property extends Component<PropertyProps, PropertyState> {
   public componentDidMount() {
     if (this.elCarousel) {
       this.jqElCarousel = $(this.elCarousel);
-      (this.jqElCarousel as any).owlCarousel({ items: 1, dots: false });
+      (this.jqElCarousel as any).owlCarousel({ items: 1, dots: false, rewind: true });
     }
   }
 
