@@ -103,7 +103,8 @@ export class Home extends Component<HomeProps, HomeState> {
               scaledSize: new google.maps.Size(23, 28),
               origin: new google.maps.Point(0,0),
               anchor: new google.maps.Point(0, 0) 
-            }
+            },
+            zIndex: 1
           });
         }
 
@@ -125,6 +126,7 @@ export class Home extends Component<HomeProps, HomeState> {
       function (event) {
         let id = this.id.replace('res-', '');
         if (markers[id]) {
+          markers[id].setZIndex(2);
           markers[id].setIcon({
             url: '/images/hover-marker-icon.png',
             scaledSize: new google.maps.Size(28, 33),
@@ -136,6 +138,7 @@ export class Home extends Component<HomeProps, HomeState> {
       function (event) {
         let id = this.id.replace('res-', '');
         if (markers[id]) {
+          markers[id].setZIndex(1);
           markers[id].setIcon({
             url: '/images/marker-icon.png',
             scaledSize: new google.maps.Size(23, 28),
