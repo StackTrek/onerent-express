@@ -1,4 +1,5 @@
 import { Component, React, ReactDOM, bind, KeyValuePair } from 'chen-react';
+import { Property } from './property';
 
 export interface HomeProps {}
 
@@ -256,7 +257,7 @@ export class Home extends Component<HomeProps, HomeState> {
                 <li><a href="#">Rentals</a></li>
                 <li className="active"><a href="#">San Francisco</a></li>
               </ol>
-              <h1>San Francisco Bay Area Rental Property Listings</h1>
+              <h1 className="text-center">San Francisco Bay Area Rental Property Listings</h1>
             </div>
           </div>
           <div className="filter row" >
@@ -363,39 +364,7 @@ export class Home extends Component<HomeProps, HomeState> {
             {this.getPagination()}
           </div>
           <div className="row clearfix results-section">
-            {this.state.rentals.map(property => {
-              return (
-                <div key={property['_id']} id={`res-${property['_id']}`} className="result-item col-md-6">
-                  {property['images'] && property['images'].length ?
-                    <div className="image-carousel">
-                      <div className="like-button"></div>
-                      <div className="slide-pag">
-                        <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-                        <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
-                      </div>
-                      <div className="owl-carousel owl-theme">
-                        <div className="item">
-                          <img className="img-responsive" src="http://placehold.it/400x250"/>
-                        </div>
-                      </div>
-                    </div> :
-                    <div className="place-img"
-                         style={{backgroundImage: `url(https://maps.googleapis.com/maps/api/streetview?location=${property['location']['lat']},${property['location']['long']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E)`}}></div>
-                  }
-                  <div className="item-description">
-                    <div className="soon pull-right">
-                      Coming Soon
-                    </div>
-                    <h5>
-                      {property['street']} · {property['state']}
-                    </h5>
-                    <h6>
-                      {property['bed']} bed, {property['bathRoom']} bath · {property['totalArea']} sqft · {property['credit']} credit
-                    </h6>
-                  </div>
-                </div>
-              );
-            })}
+            {this.state.rentals.map(property => <Property details={property} />)}
           </div>
           <div className="results-figure fixed-bottom" >
             {this.getPagination()}
