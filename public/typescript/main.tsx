@@ -75,40 +75,76 @@ export class Home extends Component<HomeProps, HomeState> {
 
       let ids = [];
       this.state.rentals.map(rent => {
-        ids.push(rent['id']);
-        if (this.markers[rent['id']]) {
-          this.markers[rent['id']].setMap(null);
-          this.markers[rent['id']] = new google.maps.Marker({
+        ids.push(rent['_id']);
+        if (this.markers[rent['_id']]) {
+          this.markers[rent['_id']].setMap(null);
+          this.markers[rent['_id']] = new google.maps.Marker({
             position: {
               lat: rent['location']['lat'],
               lng: rent['location']['long']
             },
             map: this.gMap,
-            icon: '/images/marker-icon.png'
-          });
+            icon: {
+              url: '/images/marker-icon.png',
+              scaledSize: new google.maps.Size(23, 28),
+              origin: new google.maps.Point(0,0),
+              anchor: new google.maps.Point(0, 0) 
+            }
+           });
         } else {
-          this.markers[rent['id']] = new google.maps.Marker({
+          this.markers[rent['_id']] = new google.maps.Marker({
             position: {
               lat: rent['location']['lat'],
               lng: rent['location']['long']
             },
             map: this.gMap,
-            icon: '/images/marker-icon.png'
+            icon: {
+              url: '/images/marker-icon.png',
+              scaledSize: new google.maps.Size(23, 28),
+              origin: new google.maps.Point(0,0),
+              anchor: new google.maps.Point(0, 0) 
+            }
           });
         }
 
-        this.markers[rent['id']].addListener('click', () => {
+        this.markers[rent['_id']].addListener('click', () => {
           this.setState({ selectedRent: rent });
         });
       });
 
       for (let key of Object.keys(this.markers)) {
-        if (ids.indexOf(parseInt(key)) === -1) {
+        if (ids.indexOf(key) === -1) {
           this.markers[key].setMap(null);
           delete this.markers[key];
         }
       }
     }
+
+    let markers = this.markers;
+    $('.result-item').hover(
+      function (event) {
+        let id = this.id.replace('res-', '');
+        if (markers[id]) {
+          markers[id].setIcon({
+            url: '/images/hover-marker-icon.png',
+            scaledSize: new google.maps.Size(28, 33),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 10) 
+          })
+        }
+      },
+      function (event) {
+        let id = this.id.replace('res-', '');
+        if (markers[id]) {
+          markers[id].setIcon({
+            url: '/images/marker-icon.png',
+            scaledSize: new google.maps.Size(23, 28),
+            origin: new google.maps.Point(0,0),
+            anchor: new google.maps.Point(0, 0) 
+          });
+        }
+      }
+    )
   }
 
 
@@ -326,7 +362,7 @@ export class Home extends Component<HomeProps, HomeState> {
           <div className="row clearfix results-section">
             {this.state.rentals.map(property => {
               return (
-                <div key={property['_id']} className="result-item col-md-6">
+                <div key={property['_id']} id={`res-${property['_id']}`} className="result-item col-md-6">
                   {property['images'] && property['images'].length ?
                     <div className="image-carousel">
                       <div className="like-button"></div>
