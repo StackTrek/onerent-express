@@ -1,0 +1,463 @@
+$icon-font-path: '/assets/fonts/';
+$fa-font-path: '/assets/fonts';
+
+/*----- VENDORS-------
+----------------------*/
+
+// bower:scss
+@import 'public/lib/bootstrap-sass/assets/stylesheets/_bootstrap.scss';
+@import 'public/lib/font-awesome/scss/font-awesome.scss';
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700,800');
+
+body {
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.unpadded {
+  padding: 0 !important;
+}
+
+header {
+  .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #fff;
+    margin: 0;
+    min-height: 71;
+    margin: 0;
+
+    .navbar-brand {
+      width: 167px;
+      height: 71px;
+      line-height: 71px;
+
+      img {
+        padding-top: 7px;
+      }
+    }
+  }
+
+  .navbar-nav {
+    &.main-nav {
+      padding-top: 10px;
+    }
+
+    &.login-nav {
+      li {
+        a {
+          padding-left: 5px;
+          padding-right: 5px;
+
+          &:hover {
+            border: none;
+          }
+        }
+      }
+    }
+
+    &.phone-tel {
+      li {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right: 20px;
+        text-align: right;
+
+        span {
+          color: #999;
+          font-size: 16px;
+
+          &.subtitle {
+            font-size: 11px;
+          }
+        }
+      }
+    }
+
+    li {
+      a {
+        font-weight: 400;
+        color: #221f1f;
+
+        &:hover {
+          border-bottom: 3px solid #6164ad;
+        }
+      }
+
+      &.active {
+        a {
+          background-color: transparent !important;
+          border-bottom: 3px solid #6164ad;
+        }
+      }
+    }
+  }
+}
+
+.body {
+  @extend .container-fluid;
+
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 71px;
+}
+
+.main-content {
+  @extend .col-md-8;
+
+  padding-top: 10px;
+
+  .heading {
+    @extend .row;
+
+    padding-bottom: 10px;
+
+    .breadcrumb {
+      padding-left: 0;
+      background-color: transparent;
+
+      li {
+        a {
+          font-size: 12px;
+          font-weight: normal;
+          color: #222;
+        }
+
+        &.active {
+          a {
+            color: #82D372;
+          }
+        }
+      }
+
+      > li + li:before {
+        content: '>';
+      }
+    }
+  }
+
+  .filter {
+    min-height: 90px;
+    border-top: 1px solid #EEE;
+    border-bottom: 1px solid #EEE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    label {
+      font-weight: 400;
+    }
+
+    select {
+      border: 1px solid #6163D3;
+      color: #6163D3;
+      height: 25px;
+    }
+
+    .back-to-rentals {
+      height: 100%;
+      border-right: 1px solid #EEE;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6163D3;
+
+      &:hover {
+        background-color: #E6E6E6;
+      }
+    }
+
+    .filter-icon {
+      padding-right: 10px;
+    }
+
+    .filter-form {
+      padding-top: 10px;
+    }
+
+    .page-no {
+      button {
+        color: #6163D3;
+        border: 1px solid #6163D3;
+        background-color: transparent;
+      }
+    }
+
+    .more-items {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 35px;
+      right: 0;
+
+      .btn {
+        min-height: 35px;
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 35px;
+        line-height: 33px;
+        padding: 0 12px;
+        font-size: 14px;
+        text-align: center;
+        color: #FFF !important;
+        border-radius: 20px;
+        font-weight: 600;
+        font-weight: 700;
+        background: #6163D3;
+      }
+    }
+
+    // padding: 20px;
+
+    // @extend .row;
+
+    // border-bottom: 1px solid #E6E6E6;
+
+    // > div {
+    //   min-height: 90px;
+    // }
+
+    // .back-to-rentals {
+    //   @extend .col-md-1;
+
+    //   text-align: center;
+    //   padding: 10px;
+    //   padding-top: 26px;
+    //   text-transform: uppercase;
+    // }
+
+    // .filter-form {
+    //   @extend .col-md-11;
+
+    //   border-left: 1px solid #E6E6E6;
+    //   padding-top: 20px;
+    //   min-height: 105px;
+
+    //   .button-actions > button {
+    //     margin-left: 5px;
+    //     margin-right: 5px;
+    //   }
+    // }
+
+  }
+}
+
+.results-figure {
+  height: 30px;
+  line-height: 30px;
+  padding: 10px;
+  background-color: #fff;
+  margin-bottom: 25px;
+
+  &.fixed-bottom {
+    padding: 0 25px;
+    position: fixed;
+    height: 49px;
+    line-height: 49px;
+    width: 100%;
+    bottom: -30px;
+    left: 0;
+  }
+
+  z-index: 6;
+
+  .results-count {
+    font-size: 16px;
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+
+    li {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      margin-right: 10px;
+      text-align: center;
+      line-height: 28px;
+      border-radius: 50%;
+
+      &.active {
+        border: 1px solid #6163D3;
+
+        a {
+          color: #6163D3;
+        }
+      }
+
+      a {
+        font-size: 16px;
+        color: #222;
+      }
+    }
+  }
+}
+
+.results-section {
+  background-color: #F0F0F0;
+  padding: 15px 20px;
+
+  .result-item {
+    margin-bottom: 20px;
+
+    .like-button {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      z-index: 5;
+      background-image: url(https://www.onerent.co/images/grey-heart.png);
+      background-position: center;
+      margin-right: 0;
+      height: 36px;
+      width: 40px;
+      cursor: pointer;
+    }
+
+    .slide-pag {
+      height: 100%;
+      position: absolute;
+      width: 100%;
+
+      a {
+        top: 50%;
+        transform: translateY(-50%);
+        position: absolute;
+        font-size: 3em;
+        transition: all 0.5s ease;
+        color: #fff;
+
+        &:hover {
+          color: #058d86;
+        }
+
+        &.next {
+          right: 0;
+        }
+      }
+    }
+
+    .image-carousel {
+      position: relative;
+
+      .item {
+        img {
+          width: 100%;
+        }
+      }
+    }
+
+    .item-description {
+      color: #666;
+
+      .soon {
+        color: #00f;
+        font-size: 16px;
+      }
+
+      h5 {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      h6 {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.loading {
+  @extend .alert;
+
+  @extend .alert-info;
+
+  margin-top: 20px;
+}
+
+.rentals {
+  .rental-list {
+    @extend .row;
+
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .rental-item {
+      @extend .col-md-6;
+
+      padding-bottom: 20px;
+    }
+
+    .place-img {
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-color: #F9F9F9;
+      height: 360px;
+    }
+  }
+}
+
+.map {
+  z-index: 10;
+
+  @extend .col-md-4;
+
+  padding-left: 0;
+  padding-right: 0;
+  right: 0;
+  position: fixed;
+
+  &.affix {
+    right: 0;
+  }
+}
+
+.pages {
+  @extend .col-md-12;
+
+  padding-left: 50px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  h5 {
+    display: inline;
+    float: left;
+    margin-right: 10px;
+  }
+
+  .pagination {
+    display: inline;
+  }
+}
+
+//BUTTONS
+.nav-btn {
+  background-color: transparent;
+  color: #90DB80;
+  display: table-cell;
+  border-radius: 25px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0 17px;
+  border: 2px solid #90DB80;
+  -webkit-transition: all .5s linear;
+  -moz-transition: all .5s linear;
+  -ms-transition: all .5s linear;
+  -o-transition: all .5s linear;
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 100px;
+  height: 40px;
+
+  &.sign-up {
+    background-color: #90DB80;
+    color: #fff;
+  }
+}
