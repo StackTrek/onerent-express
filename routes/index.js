@@ -114,7 +114,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/api/properties', wrap(function* (req, res, next) {
   let filters = req.query;
-  let limit = parseInt(filters['limit']) || 20;
+  let limit = parseInt(filters['limit']) || 10;
   let page = parseInt(filters['page']) || 1;
   const Property = mongoose.model('Property');
 
