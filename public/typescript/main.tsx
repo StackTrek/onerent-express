@@ -59,7 +59,7 @@ export class Home extends Component<HomeProps, HomeState> {
 
   getParameterByName(key: string, target?: string) {
     let values = [];
-    if(!target){
+    if (!target) {
       target = decodeURIComponent(location.href);
     }
 
@@ -417,7 +417,7 @@ export class Home extends Component<HomeProps, HomeState> {
                   <div className="col-md-1 filter-icon">
                     <img className="img-responsive" src="https://www.onerent.co/images/filter-icon.png"/>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label htmlFor="max-rent">Min Rent</label>
                       <select id="max-rent" className="form-control" value={`${this.state.minRent}`} onChange={this.selectMin}>
@@ -426,7 +426,7 @@ export class Home extends Component<HomeProps, HomeState> {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-2">
                     <div className="form-group">
                       <label htmlFor="min-rent">Max Rent</label>
                       <select id="min-rent" className="form-control" value={`${this.state.maxRent}`} onChange={this.selectMax}>
@@ -435,7 +435,7 @@ export class Home extends Component<HomeProps, HomeState> {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     <div className="form-group">
                       <label>Beds</label><br/>
                       <div className="page-no" >
@@ -464,7 +464,7 @@ export class Home extends Component<HomeProps, HomeState> {
                 </div>
                 {this.state.moreFilter ?
                   <div className="row">
-                    <div className="col-md-offset-1 col-md-3">
+                    <div className="col-md-offset-1 col-md-2">
                       <div className="form-group">
                         <label>Baths</label><br/>
                         <div className="page-no">
@@ -480,7 +480,7 @@ export class Home extends Component<HomeProps, HomeState> {
                         </div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                       <div className="form-group">
                         <label>Pets Allowed</label><br/>
                         <div className="pets-allowed">
@@ -520,7 +520,11 @@ export class Home extends Component<HomeProps, HomeState> {
             {this.getPagination()}
           </div>
           <div className="row clearfix results-section">
-            {this.state.rentals.map(property => <Property key={property['_id']} details={property} />)}
+            {this.state.loading ? null :
+              this.state.rentals.map(property => <Property key={property['_id']} details={property} />)}
+            {this.state.loading ?
+              <div className="loading"><i className="fa fa-spin fa-spinner"></i></div>
+              : null}
           </div>
           <div className="results-figure fixed-bottom" >
             {this.getPagination()}

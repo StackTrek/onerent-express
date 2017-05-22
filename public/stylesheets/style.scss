@@ -232,6 +232,7 @@ header {
     .more-items {
 
       padding-top: 15px;
+      text-align: right;
 
       .btn {
         min-height: 35px;
@@ -441,7 +442,15 @@ header {
   @extend .alert;
   @extend .alert-info;
 
-  margin-top: 20px;
+  text-align: center;
+  background: none;
+  border: none;
+  margin-top: 0;
+  margin-bottom: 25px;
+
+  .fa {
+    font-size: 25px;
+  }
 }
 
 .map {
