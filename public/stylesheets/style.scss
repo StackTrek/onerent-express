@@ -222,7 +222,6 @@ header {
 
       .btn {
         min-height: 35px;
-        display: block;
         position: relative;
         width: 77px;
         height: 35px;
@@ -235,6 +234,11 @@ header {
         font-weight: 600;
         font-weight: 700;
         background: #6163D3;
+
+        &.clear {
+          background: #E85454;
+          margin-right: 8px;
+        }
       }
     }
 

@@ -443,7 +443,7 @@ export class Home extends Component<HomeProps, HomeState> {
                   <div className="col-md-3 more-items">
                     <div className="form-group button-actions">
                       {showClear ?
-                        <button type="button" onClick={this.clearFilter} className="btn btn-warning">Clear</button>
+                        <button type="button" onClick={this.clearFilter} className="btn btn-warning clear">Clear</button>
                         : null}
                       <button type="button" onClick={this.moreFilter} className={`btn btn-{this.state.more ? 'normal' : 'danger'}`}> {this.state.moreFilter ? 'Close' : 'More'}</button>
                     </div>
