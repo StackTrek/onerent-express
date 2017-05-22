@@ -79,22 +79,49 @@ router.get('/api/properties', wrap(function* (req, res, next) {
 router.post('/api/properties', wrap(function* (req, res, next) {
   const Property = mongoose.model('Property');
 
+  let data;
+  let error;
   let newProp = new Property(req.body);
-  res.json({ data: yield newProp.save() })
+  try {
+    data = yield newProp.save();
+  } catch (e) {
+    error = e;
+    res.status(400);
+  }
+
+  res.json({ data, error });
 }));
 
 router.post('/api/leases', wrap(function* (req, res, next) {
   const Lease = mongoose.model('Lease');
 
+  let data;
+  let error;
   let newLease = new Lease(req.body);
-  res.json({ data: yield newLease.save() });
+  try {
+    data = yield newLease.save();
+  } catch (e) {
+    error = e;
+    res.status(400);
+  }
+
+  res.json({ data, error });
 }));
 
 router.post('/api/tenants', wrap(function* (req, res, next) {
   const Tenant = mongoose.model('Tenant');
 
+  let data;
+  let error;
   let newTenant = new Tenant(req.body);
-  res.json({ data: yield newTenant.save() })
+  try {
+    data = yield newTenant.save();
+  } catch (e) {
+    error = e;
+    res.status(400);
+  }
+
+  res.json({ data, error });
 }))
 
 

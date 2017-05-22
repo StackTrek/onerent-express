@@ -343,6 +343,14 @@ header {
       cursor: pointer;
     }
 
+    .place-img {
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-color: #F9F9F9;
+      height: 360px;
+    }
+
     .slide-pag {
       height: 100%;
       position: absolute;
@@ -355,6 +363,7 @@ header {
         font-size: 3em;
         transition: all 0.5s ease;
         color: #fff;
+        z-index: 2;
 
         &:hover {
           color: #058d86;
@@ -374,9 +383,11 @@ header {
       position: relative;
 
       .item {
-        img {
-          width: 100%;
-        }
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        background-color: #F9F9F9;
+        height: 360px;
       }
     }
 
@@ -404,34 +415,11 @@ header {
 }
 
 .loading {
-  @extend .alert;
 
+  @extend .alert;
   @extend .alert-info;
 
   margin-top: 20px;
-}
-
-.rentals {
-  .rental-list {
-    @extend .row;
-
-    padding-left: 20px;
-    padding-right: 20px;
-
-    .rental-item {
-      @extend .col-md-6;
-
-      padding-bottom: 20px;
-    }
-
-    .place-img {
-      width: 100%;
-      background-size: cover;
-      background-position: center;
-      background-color: #F9F9F9;
-      height: 360px;
-    }
-  }
 }
 
 .map {

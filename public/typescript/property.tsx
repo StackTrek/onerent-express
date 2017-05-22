@@ -1,4 +1,4 @@
-import { React, Component, KeyValuePair } from 'chen-react';
+import { React, Component, bind, KeyValuePair } from 'chen-react';
 
 export interface PropertyState {}
 
@@ -8,8 +8,28 @@ export interface PropertyProps {
 
 export class Property extends Component<PropertyProps, PropertyState> {
 
+  private elCarousel: HTMLDivElement;
+  private jqElCarousel: JQuery;
+
   public componentDidMount() {
-    console.log(this.props.details['_id']);
+    if (this.elCarousel) {
+      this.jqElCarousel = $(this.elCarousel);
+      (this.jqElCarousel as any).owlCarousel({ items: 1, dots: false });
+    }
+  }
+
+  @bind()
+  public nextImage() {
+    if (this.jqElCarousel) {
+      this.jqElCarousel.trigger('next.owl.carousel');
+    }
+  }
+
+  @bind()
+  public prevImage() {
+    if (this.jqElCarousel) {
+      this.jqElCarousel.trigger('prev.owl.carousel');
+    }
   }
 
   public render() {
@@ -19,13 +39,13 @@ export class Property extends Component<PropertyProps, PropertyState> {
           <div className="image-carousel">
             <div className="like-button"></div>
             <div className="slide-pag">
-              <a href="#" className="next"><i className="fa fa-chevron-right"></i></a>
-              <a href="#" className="prev"><i className="fa fa-chevron-left"></i></a>
+              <a href="javascript:void(0)" className="next" onClick={this.nextImage}><i className="fa fa-chevron-right"></i></a>
+              <a href="javascript:void(0)" className="prev" onClick={this.prevImage}><i className="fa fa-chevron-left"></i></a>
             </div>
-            <div className="owl-carousel owl-theme">
-              <div className="item">
-                <img className="img-responsive" src="http://placehold.it/400x250"/>
-              </div>
+            <div className="owl-carousel owl-theme" ref={e => this.elCarousel = e}>
+              {this.props.details['images'].map((img, index) =>
+              <div key={index} className="item" style={{ backgroundImage: `url(${img})` }}></div>
+              )}
             </div>
           </div> :
           <div className="place-img"
@@ -43,6 +63,6 @@ export class Property extends Component<PropertyProps, PropertyState> {
           </h6>
         </div>
       </div>
-    );    
+    );
   }
 }

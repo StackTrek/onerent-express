@@ -89,7 +89,7 @@ export class Home extends Component<HomeProps, HomeState> {
               url: '/images/marker-icon.png',
               scaledSize: new google.maps.Size(23, 28),
               origin: new google.maps.Point(0,0),
-              anchor: new google.maps.Point(0, 0) 
+              anchor: new google.maps.Point(0, 0)
             }
            });
         } else {
@@ -103,7 +103,7 @@ export class Home extends Component<HomeProps, HomeState> {
               url: '/images/marker-icon.png',
               scaledSize: new google.maps.Size(23, 28),
               origin: new google.maps.Point(0,0),
-              anchor: new google.maps.Point(0, 0) 
+              anchor: new google.maps.Point(0, 0)
             },
             zIndex: 1
           });
@@ -132,7 +132,7 @@ export class Home extends Component<HomeProps, HomeState> {
             url: '/images/hover-marker-icon.png',
             scaledSize: new google.maps.Size(28, 33),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(0, 10) 
+            anchor: new google.maps.Point(0, 10)
           })
         }
       },
@@ -144,7 +144,7 @@ export class Home extends Component<HomeProps, HomeState> {
             url: '/images/marker-icon.png',
             scaledSize: new google.maps.Size(23, 28),
             origin: new google.maps.Point(0,0),
-            anchor: new google.maps.Point(0, 0) 
+            anchor: new google.maps.Point(0, 0)
           });
         }
       }
@@ -364,7 +364,7 @@ export class Home extends Component<HomeProps, HomeState> {
             {this.getPagination()}
           </div>
           <div className="row clearfix results-section">
-            {this.state.rentals.map(property => <Property details={property} />)}
+            {this.state.rentals.map(property => <Property key={property['_id']} details={property} />)}
           </div>
           <div className="results-figure fixed-bottom" >
             {this.getPagination()}
