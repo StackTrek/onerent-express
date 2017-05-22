@@ -208,7 +208,7 @@ export class Home extends Component<HomeProps, HomeState> {
             },
             map: this.gMap,
             icon: {
-              url: '/images/marker-icon.png',
+              url: rent['ready'] ? '/images/marker-icon.png' : '/images/close-marker-icon.png',
               scaledSize: new google.maps.Size(23, 28),
               origin: new google.maps.Point(0,0),
               anchor: new google.maps.Point(0, 0)
@@ -222,7 +222,7 @@ export class Home extends Component<HomeProps, HomeState> {
             },
             map: this.gMap,
             icon: {
-              url: '/images/marker-icon.png',
+              url: rent['ready'] ? '/images/marker-icon.png' : '/images/close-marker-icon.png',
               scaledSize: new google.maps.Size(23, 28),
               origin: new google.maps.Point(0,0),
               anchor: new google.maps.Point(0, 0)
