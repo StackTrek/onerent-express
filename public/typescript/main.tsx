@@ -1,6 +1,18 @@
 import { Component, React, ReactDOM, bind, KeyValuePair } from 'chen-react';
 import { Property } from './property';
 
+Number.prototype['formatMoney'] = function(c, d, t){
+  var n = this,
+    c = isNaN(c = Math.abs(c)) ? 2 : c,
+    d = d == undefined ? "." : d,
+    t = t == undefined ? "," : t,
+    s = n < 0 ? "-" : "",
+    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))) as any,
+    j = (j = i.length) > 3 ? j % 3 : 0;
+  return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+
 export interface HomeProps {}
 
 export interface HomeState {
@@ -355,15 +367,16 @@ export class Home extends Component<HomeProps, HomeState> {
   }
 
   public render() {
-
+    let rate = window['currency']['rate'];
+    let symbol = window['currency']['symbol'];
     let maxOptions = [], minOptions = [];
     for(let x = 1000; x <= 10000; x+=500) {
       if (!this.state.minRent || this.state.minRent <= x) {
-        maxOptions.push(<option key={x} value={`${x}`}>${x}</option>);
+        maxOptions.push(<option key={x} value={`${x}`}>	&#36;{(x as any).formatMoney(0)}</option>);
       }
 
       if (!this.state.maxRent || this.state.maxRent >= x) {
-        minOptions.push(<option key={x} value={`${x}`}>${x}</option>);
+        minOptions.push(<option key={x} value={`${x}`}>	&#36;{(x as any).formatMoney(0)}</option>);
       }
     }
 
@@ -520,10 +533,12 @@ export class Home extends Component<HomeProps, HomeState> {
               <span className="pull-right" style={{ top: '25px', position: 'relative', right: '10px', color: '#fff' }} onClick={this.closeInfo}><i className="fa fa-times"></i></span>
               <img height="250px" src={`https://maps.googleapis.com/maps/api/streetview?location=${rentLoc['lat']},${rentLoc['lng']}&size=1280x720&fov=90&key=AIzaSyAp2FJJJNV6peSh8vHfXxb680UQZh7f33E`} width="100%" />
               <span style={{ top:'-41px',left: '10px',position: 'relative',color: '#fff'}}>
-            {this.state.selectedRent['address']} {this.state.selectedRent['city']}<br/>
-                {this.state.selectedRent['bedCount']} bed{this.state.selectedRent['bedCount'] > 1 ? 's' : ''}, &nbsp;
-                {this.state.selectedRent['bathroomCount']} bath{this.state.selectedRent['bathroomCount'] > 1 ? 's' : ''},  &nbsp;
-          </span>
+                {this.state.selectedRent['street']} {this.state.selectedRent['city']}<br/>
+                    {this.state.selectedRent['bed'] || 0} bed, &nbsp;
+                    {this.state.selectedRent['bathRoom'] || 0} bath &middot;&nbsp;
+                    {this.state.selectedRent['ready'] ? `${symbol}${
+                      (rate * this.state.selectedRent['rent'] as any).formatMoney(0)}/mo` : 'Coming Soon!'}
+              </span>
             </div>
             : null}
         </div>

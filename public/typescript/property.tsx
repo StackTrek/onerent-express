@@ -33,6 +33,9 @@ export class Property extends Component<PropertyProps, PropertyState> {
   }
 
   public render() {
+    let rate = window['currency']['rate'];
+    let symbol = window['currency']['symbol'];
+
     return (
       <div key={this.props.details['_id']} id={`res-${this.props.details['_id']}`} className="result-item col-md-6">
         {this.props.details['images'] && this.props.details['images'].length ?
@@ -57,13 +60,13 @@ export class Property extends Component<PropertyProps, PropertyState> {
         }
         <div className="item-description">
           <div className="soon pull-right">
-            Coming Soon
+            {this.props.details['ready'] ? `${symbol}${(rate * this.props.details['rent'] as any).formatMoney(0)}/mo` : 'Coming Soon!'}
           </div>
           <h5>
-            {this.props.details['street']} · {this.props.details['state']}
+            {this.props.details['street']} · {this.props.details['city']}
           </h5>
           <h6>
-            {this.props.details['bed'] || '0'} bed, {this.props.details['bathRoom'] || '0'} bath · {this.props.details['totalArea'] || '0'} sqft · {this.props.details['credit'] || '0'} credit
+            {this.props.details['bed'] || '0'} bed, {this.props.details['bathRoom'] || '0'} bath &middot; {this.props.details['totalArea'] || '0'} sqft &middot; {this.props.details['credit'] || '0'} credit
           </h6>
         </div>
       </div>
