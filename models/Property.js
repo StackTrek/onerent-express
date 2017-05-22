@@ -6,6 +6,18 @@ const PropertySchema = mongoose.Schema({
   city: String,
   state: String,
   zip: String,
+  bed: Number,
+  bathRoom: Number,
+  instantViewing: Boolean,
+  allowedPets: Array,
+  location: {
+	  long: {
+	    type: Number, required: true
+    },
+    lat: {
+      type: Number, required: true
+    }
+  },
   rent: { type: Number, required: true }
 });
 

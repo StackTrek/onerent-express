@@ -39,7 +39,7 @@ fs.readdirSync(modelsPath)
  * Database Setup
  */
 var options = { server: { socketOptions: { keepAlive: 1 } } };
-mongoose.connect('mongodb://localhost/test', options)
+mongoose.connect('mongodb://localhost/onerent', options);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'db connection error:'));
